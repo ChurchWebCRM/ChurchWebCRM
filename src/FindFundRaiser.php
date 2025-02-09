@@ -220,19 +220,14 @@ require_once 'Include/Header.php';
     // Column Headings
     echo "<table cellpadding='4' align='center' cellspacing='0' width='100%'>\n
     <tr class='TableHeader'>\n
-    <td width='25'>" . gettext('Edit') . "</td>\n
-    <td><a href='FindFundRaiser.php?Sort=number&ID=$iID&DateStart=$dDateStart&DateEnd=$dDateEnd'>" . gettext('Number') . "</a></td>\n
-    <td><a href='FindFundRaiser.php?Sort=date'&ID=$iID&DateStart=$dDateStart&DateEnd=$dDateEnd>" . gettext('Date') . "</a></td>\n
     <td>" . gettext('Title') . "</td>\n
+    <td>" . gettext('Date') . "</td>\n
     </tr>";
 
     // Display Deposits
     while (list($fr_ID, $fr_Date, $fr_Title) = mysqli_fetch_row($rsDep)) {
-        echo "<tr><td><a href='FundRaiserEditor.php?FundRaiserID=$fr_ID'>" . gettext('Edit') . '</td>';
-        echo "<td>$fr_ID</td>";
+        echo "<tr><td><a href='FundRaiserEditor.php?FundRaiserID=$fr_ID'>" . $fr_Title . '</td>';
         echo "<td>$fr_Date</td>";
-        // Get deposit total
-        echo "<td>$fr_Title</td>";
     }
     echo '</table>';
     ?>

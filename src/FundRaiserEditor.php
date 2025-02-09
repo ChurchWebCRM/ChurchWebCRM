@@ -11,6 +11,7 @@ use ChurchCRM\Utils\RedirectUtils;
 
 $linkBack = InputUtils::legacyFilterInputArr($_GET, 'linkBack');
 $iFundRaiserID = InputUtils::legacyFilterInputArr($_GET, 'FundRaiserID');
+$iFundRaiserID = InputUtils::filterInt($iFundRaiserID);
 
 $fundraiser = null;
 if ($iFundRaiserID > 0) {
@@ -101,7 +102,9 @@ if (isset($_POST['FundRaiserSubmit'])) {
     }
 }
 
+
 if ($iFundRaiserID > 0) {
+    
     //Get the items for this fundraiser
     $sSQL = "SELECT di_ID, di_Item, di_multibuy,
                     a.per_FirstName as donorFirstName, a.per_LastName as donorLastName,
@@ -114,6 +117,9 @@ if ($iFundRaiserID > 0) {
     $rsDonatedItems = RunQuery($sSQL);
 } else {
     $rsDonatedItems = 0;
+}
+
+if ($date =="") {
     $dDate = date('Y-m-d');    // Set default date to today
 }
 
@@ -128,31 +134,24 @@ require_once 'Include/Header.php';
 <div class="card card-body">
     <form method="post" action="FundRaiserEditor.php?<?= 'linkBack=' . $linkBack . '&FundRaiserID=' . $iFundRaiserID ?>" name="FundRaiserEditor">
 
-        <table cellpadding="3" align="center">
-
+        <table cellpadding="4">
             <tr>
                 <td align="center">
-                    <input type="submit" class="btn btn-default" value="<?= gettext('Save') ?>" name="FundRaiserSubmit">
-                    <input type="button" class="btn btn-default" value="<?= gettext('Cancel') ?>" name="FundRaiserCancel" onclick="javascript:document.location='<?php if (strlen($linkBack) > 0) {
-                                                                                                                                                                        echo $linkBack;
-                                                                        } else {
-                                                                            echo 'v2/dashboard';
-                                                                        } ?>';">
                     <?php
                     if ($iFundRaiserID > 0) {
-                        echo '<input type=button class=btn value="' . gettext('Add Donated Item') . "\" name=AddDonatedItem onclick=\"javascript:document.location='DonatedItemEditor.php?CurrentFundraiser=$iFundRaiserID&linkBack=FundRaiserEditor.php?FundRaiserID=$iFundRaiserID&CurrentFundraiser=$iFundRaiserID';\">\n";
-                        echo '<input type=button class=btn value="' . gettext('Generate Catalog') . "\" name=GenerateCatalog onclick=\"javascript:document.location='Reports/FRCatalog.php?CurrentFundraiser=$iFundRaiserID';\">\n";
-                        echo '<input type=button class=btn value="' . gettext('Generate Bid Sheets') . "\" name=GenerateBidSheets onclick=\"javascript:document.location='Reports/FRBidSheets.php?CurrentFundraiser=$iFundRaiserID';\">\n";
-                        echo '<input type=button class=btn value="' . gettext('Generate Certificates') . "\" name=GenerateCertificates onclick=\"javascript:document.location='Reports/FRCertificates.php?CurrentFundraiser=$iFundRaiserID';\">\n";
-                        echo '<input type=button class=btn value="' . gettext('Batch Winner Entry') . "\" name=BatchWinnerEntry onclick=\"javascript:document.location='BatchWinnerEntry.php?CurrentFundraiser=$iFundRaiserID&linkBack=FundRaiserEditor.php?FundRaiserID=$iFundRaiserID&CurrentFundraiser=$iFundRaiserID';\">\n";
+                        echo '<input type=button class="btn btn-default" value="' . gettext('Add Donated Item') . "\" name=AddDonatedItem onclick=\"javascript:document.location='DonatedItemEditor.php?CurrentFundraiser=$iFundRaiserID&linkBack=FundRaiserEditor.php?FundRaiserID=$iFundRaiserID&CurrentFundraiser=$iFundRaiserID';\">\n";
+                        echo '<input type=button class="btn btn-default" value="' . gettext('Generate Catalog') . "\" name=GenerateCatalog onclick=\"javascript:document.location='Reports/FRCatalog.php?CurrentFundraiser=$iFundRaiserID';\">\n";
+                        echo '<input type=button class="btn btn-default" value="' . gettext('Generate Bid Sheets') . "\" name=GenerateBidSheets onclick=\"javascript:document.location='Reports/FRBidSheets.php?CurrentFundraiser=$iFundRaiserID';\">\n";
+                        echo '<input type=button class="btn btn-default" value="' . gettext('Generate Certificates') . "\" name=GenerateCertificates onclick=\"javascript:document.location='Reports/FRCertificates.php?CurrentFundraiser=$iFundRaiserID';\">\n";
+                        echo '<input type=button class="btn btn-default" value="' . gettext('Batch Winner Entry') . "\" name=BatchWinnerEntry onclick=\"javascript:document.location='BatchWinnerEntry.php?CurrentFundraiser=$iFundRaiserID&linkBack=FundRaiserEditor.php?FundRaiserID=$iFundRaiserID&CurrentFundraiser=$iFundRaiserID';\">\n";
                     }
-                    ?>
+                    ?> <br/>
                 </td>
             </tr>
 
             <tr>
-                <td>
-                    <table cellpadding="3">
+                <td align="left">
+                    <table cellpadding="3" align=""left>
                         <tr>
                             <td class="LabelColumn"><?= gettext('Date') ?>:</td>
                             <td class="TextColumn"><input type="text" name="Date" value="<?= $dDate ?>" maxlength="10" id="Date" size="11" class="date-picker"><span style="color: red;"><?php echo $sDateError ?></span></td>
@@ -165,7 +164,13 @@ require_once 'Include/Header.php';
 
                         <tr>
                             <td class="LabelColumn"><?= gettext('Description') ?>:</td>
-                            <td class="TextColumn"><input type="text" name="Description" id="Description" value="<?= $sDescription ?>"></td>
+                            <td class="TextColumn"><input type="text" size="100" name="Description" id="Description" value="<?= $sDescription ?>"></td>
+                        </tr>
+                        <tr>
+                            <td span="2" align="center"> <br/>
+                                <input type="submit" class="btn btn-primary" value="<?= gettext('Save') ?>" name="FundRaiserSubmit">
+                                <input type="button" class="btn btn-default" value="<?= gettext('Cancel') ?>" name="FundRaiserCancel" onclick="javascript:document.location='FindFundRaiser.php';">
+                            </td>
                         </tr>
                     </table>
                 </td>
@@ -174,12 +179,12 @@ require_once 'Include/Header.php';
 
     <br>
 </div>
-<div class="card card-body">
-    <b><?= gettext('Donated items for this fundraiser') ?>:</b>
-    <br>
-    <div class="table-responsive">
+<div class="card">
+    <div class="card-header">
+        <b><?= gettext('Donated items for this fundraiser') ?></b>
+    </div>
+    <div class="card-body table-responsive">
         <table class="table" cellpadding="5" cellspacing="0" width="100%">
-
             <tr class="TableHeader">
                 <td><?= gettext('Item') ?></td>
                 <td><?= gettext('Multiple') ?></td>
